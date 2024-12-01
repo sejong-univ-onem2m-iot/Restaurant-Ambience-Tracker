@@ -67,11 +67,6 @@ def create_container(ae_url, sensor, ae_ri):
     container_payload = {
         "m2m:cnt": {
             "rn": sensor
-            "con": {
-                "power": "" #on/off
-                "lux": "" #밝기
-                "rgb": "rgb" #색상
-            }
         }
     }
 
