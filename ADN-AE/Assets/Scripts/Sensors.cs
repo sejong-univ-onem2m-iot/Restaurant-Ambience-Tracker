@@ -20,13 +20,13 @@ public class Sensors : MonoBehaviour
         {
             using (StreamReader reader = new StreamReader(filePath, encoding))
             {
-                string content = reader.ReadToEnd();
+                string content = reader.ReadToEnd();                
                 return content;
             }
         }
         catch (Exception ex)
         {            
-            return string.Empty;
+            return string.Empty;            
         }
     }
 

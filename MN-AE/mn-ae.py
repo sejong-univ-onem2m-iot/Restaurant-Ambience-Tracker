@@ -17,7 +17,6 @@ CONFIG = {
     'MN_CSE_HOST': os.getenv('MN_CSE_HOST'),
     'MN_CSE_PORT': os.getenv('MN_CSE_PORT')
 }
-
 # URLs
 MN_CSE_URL = f"https://{CONFIG['MN_CSE_HOST']}:{CONFIG['MN_CSE_PORT']}/id-in"
 IN_CSE_URL = f"https://{CONFIG['IN_CSE_HOST']}:{CONFIG['IN_CSE_PORT']}/id-in"
@@ -68,6 +67,11 @@ def create_container(ae_url, sensor, ae_ri):
     container_payload = {
         "m2m:cnt": {
             "rn": sensor
+            "con": {
+                "power": "" #on/off
+                "lux": "" #밝기
+                "rgb": "rgb" #색상
+            }
         }
     }
 
@@ -173,7 +177,12 @@ def handle_notification():
     if not new_ae_rn:
         print("AE Resource Name (rn) is missing in the notification.")
 
-    if new_ae_rn:
+    if new_ae_rn=="smartBulb": #생성된 ae의 이름이 smartBulb일 경우
+        print(f"{new_ae_rn} created")
+        cnt_name = "status"
+        ae_url = f"https://{CONFIG['MN_CSE_HOST']}:{CONFIG['MN_CSE_PORT']}/{new_ae_ri}"
+        create_container(ae_url, cnt_name, new_ae_ri)
+    else: # 그외의 센서가 ae로 등록될 경우
         print(f"New AE created: {new_ae_rn}")
         sensor_names = ["temperature", "humid", "light"]
         for sensor in sensor_names:
@@ -234,4 +243,4 @@ def health_check():
 
 if __name__ == '__main__':
     threading.Thread(target=create_subscription).start()
-    app.run(host='0.0.0.0', debug = True, port=int(CONFIG['LOCAL_PORT']))
+    app.run(host='0.0.0.0', debug=True, port=int(CONFIG['LOCAL_PORT']))
