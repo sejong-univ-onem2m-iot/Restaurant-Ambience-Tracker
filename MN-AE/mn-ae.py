@@ -6,7 +6,9 @@ from datetime import datetime
 import threading
 import time
 from functools import wraps
-
+import os
+import warnings
+warnings.filterwarnings('ignore')
 CONFIG = {
     'IN_CSE_HOST': os.getenv('IN_CSE_HOST'),
     'IN_CSE_PORT': os.getenv('IN_CSE_PORT'),
@@ -17,13 +19,22 @@ CONFIG = {
     'MN_CSE_HOST': os.getenv('MN_CSE_HOST'),
     'MN_CSE_PORT': os.getenv('MN_CSE_PORT')
 }
+CONFIG['MN_CSE_HOST'] = 'localhost'
+CONFIG['MN_CSE_PORT'] = '3000'
+CONFIG['MN_ORIGINATOR'] = 'CAdmin'
+CONFIG['LOCAL_HOST'] = '192.168.0.8'
+CONFIG['LOCAL_PORT'] = '5000'
+CONFIG['AUTH_TOKEN'] = 'osori'
 # URLs
-MN_CSE_URL = f"https://{CONFIG['MN_CSE_HOST']}:{CONFIG['MN_CSE_PORT']}/id-in"
-IN_CSE_URL = f"https://{CONFIG['IN_CSE_HOST']}:{CONFIG['IN_CSE_PORT']}/id-in"
+MN_CSE_URL = f"http://{CONFIG['MN_CSE_HOST']}:{CONFIG['MN_CSE_PORT']}/id-mn"
+IN_CSE_URL = f"http://{CONFIG['IN_CSE_HOST']}:{CONFIG['IN_CSE_PORT']}/id-in"
 NOTIFICATION_URL = f"http://{CONFIG['LOCAL_HOST']}:{CONFIG['LOCAL_PORT']}/notifi"
 
 app = Flask(__name__)
 CORS(app)
+app = Flask(__name__)
+CORS(app)
+ts_id = [] #ts_id param
 
 # Token Authentication Decorator
 def require_token(f):
@@ -42,9 +53,9 @@ def require_token(f):
 
 def create_headers(originator: str, resource_type: str = None, request_id: str = None, time: str = None, rsc: str = None) -> dict:
     headers = {
-        "Accept": "application/json;",
+        "Accept": "application/json",
         "X-M2M-Origin": originator,
-        "X-M2M-RVI": "2a",
+        "X-M2M-RVI": "3",
         "Authorization": f"Bearer {CONFIG['AUTH_TOKEN']}"
     }
 
@@ -62,11 +73,29 @@ def create_headers(originator: str, resource_type: str = None, request_id: str =
 
     return headers
 
-def create_container(ae_url, sensor, ae_ri):
+def register_mn_ae(): #mn-ae에대한 ae를 in-cse에 생성 요청하는 코드 // NO DEBUGGING
+    mn_ae_ori = "myRestaurant1" #환경변수로 따로 설정필요->레스토랑 이름으로 입력시키면 아주 간편
+    header = create_headers(f"C{mn_ae_ori}", '2', 'create_ae')
+
+    payload = {
+        "m2m:ae": {
+            "rn": mn_ae_ori,
+            "api": f"N{mn_ae_ori}.myapp",
+            "lbl": ["test"],
+            "rr": True,
+            "srv": ["2a", "3", "4"]
+        }
+    }
+    
+    response = requests.post(IN_CSE_URL, headers=header, json=payload, verify=False)
+    if response.status_code == 201:
+        print("message: AE 등록 성공\n data:", response.json())
+
+def create_container(ae_url, sensor, ae_ri): #
     header = create_headers(ae_ri, '3', 'creat_cnt')
     container_payload = {
         "m2m:cnt": {
-            "rn": sensor
+            "rn": 'command'
         }
     }
 
@@ -81,17 +110,25 @@ def create_timeseries(ae_url, sensor, ae_ri):
     timeseries_payload = {
         "m2m:ts": {
             "rn": sensor,  # Resource name for the timeseries
-            "mni": 1000,  # Maximum number of instances
+            "mni": 4320,  # Maximum number of instances for a month
         }
     }
 
     response = requests.post(ae_url, headers=header, json=timeseries_payload, verify=False)
+    print("response content", response.json())
+    
     if response.status_code == 201:
+        response_data = response.json()
+        ri = response_data.get("m2m:ts", {}).get("ri")  # Extract the 'ri' value
         print(f"TimeSeries '{sensor}' created successfully under AE {ae_url}")
+        print(f"Extracted Resource ID (ri): {ri}")
+        return ri  # Return the extracted 'ri'
     else:
         print(f"Failed to create TimeSeries '{sensor}': {response.status_code} {response.text}")
+        return None  # Return None if the creation failed
 
 def create_subscription():
+    time.sleep(2)
     subscription_url = MN_CSE_URL
     header = create_headers(CONFIG['MN_ORIGINATOR'], '23', 'create_sub')
     subscription_payload = {
@@ -123,31 +160,10 @@ def create_subscription():
     else:
         print(f"Failed to create subscription: {response.status_code} {response.text}")
 
-@app.route('/register_adn_ae', methods=['POST'])
-@require_token
-def register_adn_ae():
-    data = request.json
-    ae_id = data.get("ae_id")
-    header = create_headers(CONFIG['MN_ORIGINATOR'], '2', 'create_ae')
-    payload = {
-        "m2m:ae": {
-            "rn": data.get("rn", "test_sensor2"),
-            "api": data.get("api", "NAppID.myapp"),
-            "lbl": [],
-            "rr": True,
-            "srv": ["2a", "3", "4"]
-        }
-    }
-    
-    response = requests.post(IN_CSE_URL, headers=header, json=payload, verify=False)
-    if response.status_code == 201:
-        return jsonify({"message": "AE 등록 성공", "data": response.json()}), 201
-    else:
-        return jsonify({"message": "AE 등록 실패", "status": response.status_code}), response.status_code
-
 @app.route('/notifi', methods=['POST'])
-@require_token
+#@require_token
 def handle_notification():
+    global ts_id
     notification = request.get_json()
     print(f"Notification received: {json.dumps(notification, indent=4)}")
 
@@ -172,23 +188,39 @@ def handle_notification():
     if not new_ae_rn:
         print("AE Resource Name (rn) is missing in the notification.")
 
-    if new_ae_rn=="smartBulb": #생성된 ae의 이름이 smartBulb일 경우
+    if new_ae_rn=="SmartBulb": #생성된 ae의 이름이 smartBulb일 경우
         print(f"{new_ae_rn} created")
         cnt_name = "status"
-        ae_url = f"https://{CONFIG['MN_CSE_HOST']}:{CONFIG['MN_CSE_PORT']}/{new_ae_ri}"
+        ae_url = f"http://{CONFIG['MN_CSE_HOST']}:{CONFIG['MN_CSE_PORT']}/{new_ae_ri}"
         create_container(ae_url, cnt_name, new_ae_ri)
-    else: # 그외의 센서가 ae로 등록될 경우
+    elif new_ae_rn == "Sensor": # 그외의 센서가 ae로 등록될 경우
         print(f"New AE created: {new_ae_rn}")
-        sensor_names = ["temperature", "noise", "light"]
+        sensor_names = ["temperature", "humid", "noise"]
         for sensor in sensor_names:
-            ae_url = f"https://{CONFIG['MN_CSE_HOST']}:{CONFIG['MN_CSE_PORT']}/{new_ae_ri}"
+            ae_url = f"http://{CONFIG['MN_CSE_HOST']}:{CONFIG['MN_CSE_PORT']}/{new_ae_ri}"
             print(f"Creating TimeSeries Resource '{sensor}' under AE URL: {ae_url}")
-            create_timeseries(ae_url, sensor, new_ae_ri)
-
+            ts_id.append(create_timeseries(ae_url, sensor, new_ae_ri))
+            print(ts_id)
     return jsonify({"status": "success"}), 200
 
+def create_group(cnt_ri, ts_id):
+    print(ts_id)
+    header = create_headers(f"{cnt_ri}", '9', 'create_grp')
+    group_payload = {
+        "m2m:grp": {
+            "rn": "sensor_grp",  # Resource name for the timeseries
+            "mnm": 10, #maximum member number a
+            "mid": ts_id
+        }
+    }    
+    response = requests.post(f"http://{CONFIG['MN_CSE_HOST']}:{CONFIG['MN_CSE_PORT']}/{cnt_ri}", headers=header, json=group_payload, verify=False)
+    if response.status_code == 201:
+        print(f"Group sensor_grp created successfully under AE {cnt_ri}")
+    else:
+        print(f"Failed to create TimeSeries sensor_grp: {response.status_code} {response.text}")
+
 @app.route('/sync_to_in_cse', methods=['POST'])
-@require_token
+#@require_token
 def sync_to_in_cse():
     data = request.json
     ae_id = data.get("ae_id")
@@ -225,9 +257,99 @@ def sync_to_in_cse():
     else:
         return jsonify({"message": "MN-CSE에서 데이터 가져오기 실패", 
                        "status": response.status_code}), response.status_code
+# 수정해야할 코드 12.03
+"""
+CONFIG = {
+    'MN_CSE_URL': "http://192.168.0.8:3000/cse-in/Sensor/grp_uaCwwSWq7k/fopt/la",  # MN-CSE URL
+    'IN_CSE_URL': "http://192.168.0.9:3000/cse-in/Sensor",  # IN-CSE URL
+    'AUTH_TOKEN': "your_auth_token_here",  # Authorization Token
+    'HEADERS': {
+        "Accept": "application/json",
+        "X-M2M-RI": "12345",
+        "X-M2M-Origin": "Sensors",
+        "X-M2M-RVI": "3"
+    }
+}
+"""
+def fetch_from_mn_cse():
+    #Fetch the latest data from MN-CSE.
+    header = create_headers("myRestaurant1", None, "fetch_data", None, "3") #originator를 영민 코드에선 Sensors
+    try:
+        response = requests.get(
+            f"{MN_CSE_URL}/Sensor/{GRP_RN}/fopt/la", headers=header, verify=False
+        )
+        if response.status_code == 200:
+            print("Fetched data from MN-CSE successfully!")
+            print("fetched data: ", response.json())
+            return response.json()
+        else:
+            print(f"Failed to fetch from MN-CSE: {response.status_code} {response.text}")
+            return None
+    except Exception as e:
+        print(f"Error fetching from MN-CSE: {e}")
+        return None
 
+def send_to_in_cse(data):
+    """Send the processed data to IN-CSE."""
+    try:
+        headers = CONFIG['HEADERS']
+        headers["X-M2M-Origin"] = "CAdmin"  # Update originator for IN-CSE
+        
+        response = requests.post(
+            CONFIG['IN_CSE_URL'], headers=headers, json=data, verify=False
+        )
+        if response.status_code == 201:
+            print("Data sent to IN-CSE successfully!")
+        else:
+            print(f"Failed to send to IN-CSE: {response.status_code} {response.text}")
+    except Exception as e:
+        print(f"Error sending to IN-CSE: {e}")
+
+
+@app.route('/sync_data', methods=['GET'])
+def sync_data():
+    """Fetch data from MN-CSE, process it, and send it to IN-CSE."""
+    # Fetch data from MN-CSE
+    mn_cse_data = fetch_from_mn_cse()
+    if not mn_cse_data:
+        return jsonify({"message": "Failed to fetch data from MN-CSE"}), 500
+
+    # Process the data (assuming we want to restructure it)
+    processed_data = process_mn_cse_data(mn_cse_data)
+
+    # Send the processed data to IN-CSE
+    send_to_in_cse(processed_data)
+
+    return jsonify({"message": "Data synced successfully"}), 200
+
+
+def process_mn_cse_data(mn_cse_data):
+    """Process the data fetched from MN-CSE."""
+    try:
+        # Extract the response payload
+        responses = mn_cse_data.get("m2m:agr", {}).get("m2m:rsp", [])
+        processed = []
+
+        for resp in responses:
+            # Extract the timeseries instance content
+            content_instance = resp.get("pc", {}).get("m2m:tsi", {}) #어떻게 처리해서 보낼진 영민이랑 상의
+            if content_instance:
+                processed.append({
+                    "con": content_instance.get("con"),  # Data content
+                    "ts": content_instance.get("ct"),   # Creation timestamp
+                    "rn": content_instance.get("rn"),   # Resource name
+                })
+        
+        # Format the data as required for IN-CSE
+        return {
+            "m2m:tsi_batch": processed  # m2m:tsi_batch이유는 감싸서 전달하면 반복적으로 tsi 인스턴스를 생성한다는것 같음 실험해봐야함.
+        }
+    except Exception as e:
+        print(f"Error processing MN-CSE data: {e}")
+        return {}
+# 수정해야할 코드 12.03
 @app.route('/health_check', methods=['GET'])
-@require_token
+#@require_token
 def health_check():
     return jsonify({
         "status": "MN-AE is running",
@@ -236,6 +358,19 @@ def health_check():
         "configuration": {k: v for k, v in CONFIG.items() if 'TOKEN' not in k}
     }), 200
 
+init_task_done = threading.Event()
+
+def start_init_tasks():
+    global ts_id
+    if not init_task_done.is_set():
+        time.sleep(2)
+        create_subscription()                
+        while len(ts_id) != 3:
+            time.sleep(1)            
+            pass
+        create_group("CSensors", ts_id)
+        init_task_done.set()
+
 if __name__ == '__main__':
-    threading.Thread(target=create_subscription).start()
+    threading.Thread(target=start_init_tasks).start()
     app.run(host='0.0.0.0', debug=True, port=int(CONFIG['LOCAL_PORT']))
