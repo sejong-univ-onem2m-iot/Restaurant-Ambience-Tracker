@@ -12,8 +12,8 @@ namespace IoT
 {
     public class OneM2M
     {
-        private static string url = "https://192.168.0.8:3000";
-        
+        public static string baseUrl = "http://192.168.0.8:3000";
+        public static bool checkCommand = false;
         private static bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {                 
             return true;
@@ -21,14 +21,21 @@ namespace IoT
 
         private static void ConfigureHttps()
         {            
-            ServicePointManager.ServerCertificateValidationCallback = ValidateServerCertificate;            
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+            if (baseUrl.StartsWith("https"))
+            {
+                ServicePointManager.ServerCertificateValidationCallback = ValidateServerCertificate;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+            }
         }
 
-        public static async Task<string> PostDataAsync(string origin, int type, string body, string token = "")
-        {
-            ConfigureHttps();
-            string endpoint = $"{url}/cse-in";
+        public static async Task<string> PostDataAsync(string origin, int type, string body, string token = "", string url = "")
+        {            
+            //ConfigureHttps();
+            string endpoint;
+            if (url == "")
+                endpoint = $"{baseUrl}/cse-mn";
+            else
+                endpoint = $"{baseUrl}/cse-mn/{url}";
             Debug.Log(endpoint);
             System.Random rand = new System.Random();
             byte[] bodyRaw = Encoding.UTF8.GetBytes(body);
@@ -46,7 +53,7 @@ namespace IoT
                 {                                       
                     request.SetRequestHeader("Authorization", $"Bearer {token}");
                 }                
-                request.certificateHandler = new BypassCertificateHandler();
+                //request.certificateHandler = new BypassCertificateHandler();
                 try
                 {
                     await request.SendWebRequest();
@@ -59,9 +66,11 @@ namespace IoT
                     }
                     else
                     {
-                        Debug.LogError($"Error: {request.error}");
-                        Debug.LogError($"Response code: {request.responseCode}");
-                        throw new Exception($"Request failed: {request.error}");
+                        //Debug.LogError($"Error: {request.error}");
+                        //Debug.LogError($"Response code: {request.responseCode}");
+                        Debug.LogError($"Server response: {request.downloadHandler.text}");
+                        string jsonResponse = request.downloadHandler.text;
+                        return jsonResponse;
                     }
                 }
                 catch (Exception e)
@@ -72,34 +81,52 @@ namespace IoT
             }
         }
 
-        public static IEnumerator GetData(string origin)
+        public static async Task<string> GetDataAsync(string origin, string token = "", string url = "")
         {
-            ConfigureHttps();
+            //ConfigureHttps();
+            string endpoint;
+            if (url == "")
+                endpoint = $"{baseUrl}/cse-mn";
+            else
+                endpoint = $"{baseUrl}/cse-mn/{url}";
+            Debug.Log(endpoint);
+            System.Random rand = new System.Random();
 
-            string endpoint = $"{url}/users";
             using (UnityWebRequest request = new UnityWebRequest(endpoint, "GET"))
             {
                 request.downloadHandler = new DownloadHandlerBuffer();
-                System.Random rand = new System.Random();
                 request.SetRequestHeader("Accept", "application/json");
                 request.SetRequestHeader("X-M2M-Origin", origin);
                 request.SetRequestHeader("X-M2M-RI", rand.Next().ToString());
                 request.SetRequestHeader("X-M2M-RVI", "3");
 
-                // Configure certificate handling
-                request.certificateHandler = new BypassCertificateHandler();
-
-                yield return request.SendWebRequest();
-
-                if (request.result == UnityWebRequest.Result.Success)
+                if (token != "")
                 {
-                    string jsonResponse = request.downloadHandler.text;
-                    Debug.Log($"Server response: {jsonResponse}");
+                    request.SetRequestHeader("Authorization", $"Bearer {token}");
                 }
-                else
+
+                //request.certificateHandler = new BypassCertificateHandler();
+
+                try
                 {
-                    Debug.LogError($"Error: {request.error}");
-                    Debug.LogError($"Response code: {request.responseCode}");
+                    await request.SendWebRequest();
+                    if (request.result == UnityWebRequest.Result.Success)
+                    {
+                        string jsonResponse = request.downloadHandler.text;
+                        Debug.Log($"Server response: {jsonResponse}");
+                        return jsonResponse;
+                    }
+                    else
+                    {
+                        Debug.LogError($"Err : {request.downloadHandler.text}");
+                        string jsonResponse = request.downloadHandler.text;
+                        return jsonResponse;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"Exception during web request: {e.Message}");
+                    throw;
                 }
             }
         }

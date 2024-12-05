@@ -79,6 +79,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityEditor.UI", "UnityEdit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.AI.Navigation.Editor", "Unity.AI.Navigation.Editor.csproj", "{F1D26068-CEB1-B4CB-12B3-01ABFE4EE5B4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.2D.Sprite.Editor", "Unity.2D.Sprite.Editor.csproj", "{0F7D5C0E-BF35-77D9-428B-47C53A404199}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.Multiplayer.Center.Common", "Unity.Multiplayer.Center.Common.csproj", "{AF9473A3-A10F-50B6-B240-8526583B7D51}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.InputSystem.ForUI", "Unity.InputSystem.ForUI.csproj", "{7FB4F642-F83C-B18D-A172-B766130062CD}"
@@ -93,11 +95,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.VisualScripting.Setti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.InputSystem.TestFramework", "Unity.InputSystem.TestFramework.csproj", "{094E6A76-2C17-1495-93B9-877A050327F3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{B9658FF1-B8CA-99F9-830C-64574985538E}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.ShaderGraph.Utilities", "Unity.ShaderGraph.Utilities.csproj", "{7FF9F840-1B02-4298-2668-DF0EBE947C17}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.VisualScripting.Shared.Editor", "Unity.VisualScripting.Shared.Editor.csproj", "{2CB71293-214C-D69A-62FF-78EEAA6955CF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{B9658FF1-B8CA-99F9-830C-64574985538E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.RenderPipeline.Universal.ShaderLibrary", "Unity.RenderPipeline.Universal.ShaderLibrary.csproj", "{329D2A04-D96B-FBD3-24E8-7FE4C1AC2438}"
 EndProject
@@ -148,6 +150,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.PerformanceTesting", "Unity.PerformanceTesting.Player.csproj", "{50CA6D46-FC94-059D-EC76-E0D18A58E278}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.TextMeshPro", "Unity.TextMeshPro.Player.csproj", "{94F6D305-5325-0F8F-8C2C-68DF63F9C837}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.Rendering.LightTransport.Runtime", "Unity.Rendering.LightTransport.Runtime.Player.csproj", "{CC0F842B-AF64-0849-E918-EA6C48D2A89E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.VisualScripting.State", "Unity.VisualScripting.State.Player.csproj", "{5DDCDA99-39AB-42E1-85FE-801D6BD8CCE7}"
 EndProject
@@ -335,6 +339,10 @@ Global
 		{F1D26068-CEB1-B4CB-12B3-01ABFE4EE5B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1D26068-CEB1-B4CB-12B3-01ABFE4EE5B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1D26068-CEB1-B4CB-12B3-01ABFE4EE5B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F7D5C0E-BF35-77D9-428B-47C53A404199}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F7D5C0E-BF35-77D9-428B-47C53A404199}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F7D5C0E-BF35-77D9-428B-47C53A404199}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F7D5C0E-BF35-77D9-428B-47C53A404199}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AF9473A3-A10F-50B6-B240-8526583B7D51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AF9473A3-A10F-50B6-B240-8526583B7D51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF9473A3-A10F-50B6-B240-8526583B7D51}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -363,6 +371,10 @@ Global
 		{094E6A76-2C17-1495-93B9-877A050327F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{094E6A76-2C17-1495-93B9-877A050327F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{094E6A76-2C17-1495-93B9-877A050327F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9658FF1-B8CA-99F9-830C-64574985538E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9658FF1-B8CA-99F9-830C-64574985538E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9658FF1-B8CA-99F9-830C-64574985538E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9658FF1-B8CA-99F9-830C-64574985538E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7FF9F840-1B02-4298-2668-DF0EBE947C17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7FF9F840-1B02-4298-2668-DF0EBE947C17}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7FF9F840-1B02-4298-2668-DF0EBE947C17}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -371,10 +383,6 @@ Global
 		{2CB71293-214C-D69A-62FF-78EEAA6955CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2CB71293-214C-D69A-62FF-78EEAA6955CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2CB71293-214C-D69A-62FF-78EEAA6955CF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B9658FF1-B8CA-99F9-830C-64574985538E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B9658FF1-B8CA-99F9-830C-64574985538E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B9658FF1-B8CA-99F9-830C-64574985538E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B9658FF1-B8CA-99F9-830C-64574985538E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{329D2A04-D96B-FBD3-24E8-7FE4C1AC2438}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{329D2A04-D96B-FBD3-24E8-7FE4C1AC2438}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{329D2A04-D96B-FBD3-24E8-7FE4C1AC2438}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -475,6 +483,10 @@ Global
 		{94F6D305-5325-0F8F-8C2C-68DF63F9C837}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94F6D305-5325-0F8F-8C2C-68DF63F9C837}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94F6D305-5325-0F8F-8C2C-68DF63F9C837}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC0F842B-AF64-0849-E918-EA6C48D2A89E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC0F842B-AF64-0849-E918-EA6C48D2A89E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC0F842B-AF64-0849-E918-EA6C48D2A89E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC0F842B-AF64-0849-E918-EA6C48D2A89E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5DDCDA99-39AB-42E1-85FE-801D6BD8CCE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5DDCDA99-39AB-42E1-85FE-801D6BD8CCE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DDCDA99-39AB-42E1-85FE-801D6BD8CCE7}.Release|Any CPU.ActiveCfg = Release|Any CPU

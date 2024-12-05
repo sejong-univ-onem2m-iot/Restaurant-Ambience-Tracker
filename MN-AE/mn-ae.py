@@ -67,11 +67,6 @@ def create_container(ae_url, sensor, ae_ri):
     container_payload = {
         "m2m:cnt": {
             "rn": sensor
-            "con": {
-                "power": "" #on/off
-                "lux": "" #밝기
-                "rgb": "rgb" #색상
-            }
         }
     }
 
@@ -184,7 +179,7 @@ def handle_notification():
         create_container(ae_url, cnt_name, new_ae_ri)
     else: # 그외의 센서가 ae로 등록될 경우
         print(f"New AE created: {new_ae_rn}")
-        sensor_names = ["temperature", "humid", "light"]
+        sensor_names = ["temperature", "noise", "light"]
         for sensor in sensor_names:
             ae_url = f"https://{CONFIG['MN_CSE_HOST']}:{CONFIG['MN_CSE_PORT']}/{new_ae_ri}"
             print(f"Creating TimeSeries Resource '{sensor}' under AE URL: {ae_url}")
