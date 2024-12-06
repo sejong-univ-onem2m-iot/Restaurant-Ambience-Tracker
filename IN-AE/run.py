@@ -176,7 +176,7 @@ def sync_data():
     time.sleep(5)    
     with app.app_context():
         while True:                    
-            csr_list = send_get_request("http://localhost:8080/id-in?rcn=4", os.environ['IN_CSE_ORIGIN']).json()["m2m:cb"]["m2m:csr"]
+            csr_list = send_get_request("http://localhost:8080/id-in?rcn=4", "Ca98991566ee4b74b8cba3c3bc4e0714807451e2f540d07b17fe829c7b6432bea").json()["m2m:cb"]["m2m:csr"]
             print(len(csr_list))
             for csr in csr_list:
                 csr_name = csr["rn"]            

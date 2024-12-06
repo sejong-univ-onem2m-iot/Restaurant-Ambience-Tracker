@@ -2097,7 +2097,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8abb4458859071479190aa4eef50e08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeSpan: 60
+  timeSpan: 1
   temp: 24
   lux: 200
   db: 70
@@ -2845,6 +2845,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f21fcca3c1d1b164ea312ba5990df6b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isRunning: 0
 --- !u!4 &1731542900
 Transform:
   m_ObjectHideFlags: 0
