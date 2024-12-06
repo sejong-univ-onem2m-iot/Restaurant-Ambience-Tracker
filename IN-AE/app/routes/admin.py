@@ -46,9 +46,7 @@ def create_content_instance(container_url, data, originator):
             headers=header, 
             json=content_instance_payload, 
             verify=False
-        )
-        # Check if creation was successful (201 Created)
-        print('ㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ', response.status_code)
+        )                
         if response.status_code == 201:
             print('Success')
             return True

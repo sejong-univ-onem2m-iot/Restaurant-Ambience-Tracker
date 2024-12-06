@@ -16,7 +16,7 @@
 
 <div class="container">
     <header class="header">
-        <h1>맛집 리스트</h1>
+        <h1>Restaurant list</h1>
         <a href="{{ url_for('auth.logout') }}" class="logout-btn">로그아웃</a>
     </header>
     
@@ -27,7 +27,7 @@
             <div class="restaurant-image">
                 <img src="{{ url_for('static', filename=restaurant.image_path) }}" 
                      alt="{{ restaurant.name }}"
-                     onerror="this.src='{{ url_for('static', filename='images/default-restaurant.jpg') }}'">
+                     onerror="this.src='{{ url_for('static', filename='images/1.jpg') }}'">
             </div>
             <div class="restaurant-info">
                 <h2>{{ restaurant.name }}</h2>
@@ -66,24 +66,24 @@
                 <div class="current-status">
                     <div class="status-item">
                         <i class="fas fa-thermometer-half"></i>
-                        <span>온도: </span>
+                        <span>Temperature: </span>
                         <span id="modalTemperature"></span>°C
                     </div>
                     <div class="status-item">
                         <i class="fas fa-tint"></i>
-                        <span>습도: </span>
+                        <span>Humidity: </span>
                         <span id="modalHumidity"></span>%
                     </div>
                     <div class="status-item">
                         <i class="fas fa-volume-up"></i>
-                        <span>소음: </span>
+                        <span>Noise: </span>
                         <span id="modalNoise"></span>dB
                     </div>
                 </div>
                 <p id="modalDescription" class="description"></p>
                 <div id="map" class="restaurant-map"></div>
                 <div class="reviews-section">
-                    <h3>한줄평</h3>
+                    <h3>Restaurant Analysis</h3>
                     <div id="modalReviews" class="reviews-list"></div>
                 </div>
             </div>

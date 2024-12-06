@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>레스토랑 목록</title>
+    <title>Restaurant list</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
@@ -255,8 +255,8 @@
 <body>
     <div class="public-container">
         <header class="public-header">
-            <h1>맛집 리스트</h1>
-            <a href="{{ url_for('auth.login') }}" class="admin-link">관리자 로그인</a>
+            <h1>Restaurant list</h1>
+            <a href="{{ url_for('auth.login') }}" class="admin-link">Admin login</a>
         </header>
 
         <div class="restaurant-grid">
@@ -265,7 +265,7 @@
                 <div class="restaurant-image">
                     <img src="{{ url_for('static', filename=restaurant.image_path) }}" 
                          alt="{{ restaurant.name }}"
-                         onerror="this.src='{{ url_for('static', filename='images/default-restaurant.jpg') }}'">
+                         onerror="this.src='{{ url_for('static', filename='images/1.jpg') }}'">
                 </div>
                 <div class="restaurant-info">
                     <h2>{{ restaurant.name }}</h2>
@@ -304,24 +304,24 @@
                     <div class="current-status">
                         <div class="status-item">
                             <i class="fas fa-thermometer-half"></i>
-                            <span>온도: </span>
+                            <span>Temperature: </span>
                             <span id="modalTemperature"></span>°C
                         </div>
                         <div class="status-item">
                             <i class="fas fa-tint"></i>
-                            <span>습도: </span>
+                            <span>Humidity: </span>
                             <span id="modalHumidity"></span>%
                         </div>
                         <div class="status-item">
                             <i class="fas fa-volume-up"></i>
-                            <span>소음: </span>
+                            <span>Noise: </span>
                             <span id="modalNoise"></span>dB
                         </div>
                     </div>
                     <p id="modalDescription" class="description"></p>
                     <div id="map" class="restaurant-map"></div>
                     <div class="reviews-section">
-                        <h3>한줄평</h3>
+                        <h3>Review</h3>
                         <div id="modalReviews" class="reviews-list"></div>
                     </div>
                 </div>
@@ -395,7 +395,7 @@
                 
             } catch (error) {
                 console.error('Error:', error);
-                alert('정보를 불러오는데 실패했습니다.');
+                alert('Loading fail');
             }
         }
 

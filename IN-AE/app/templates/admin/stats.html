@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ restaurant.name }} - 통계</title>
+    <title>{{ restaurant.name }} - statistics</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         * {
@@ -261,33 +261,33 @@
 <body>
     <div class="stats-container">
         <div class="header-actions">
-            <h1>{{ restaurant.name }} 통계</h1>
+            <h1>{{ restaurant.name }} Statistics</h1>
             <div class="action-buttons">
                 <a href="{{ url_for('admin.edit_restaurant') }}" class="edit-btn">
-                    <i class="fas fa-edit"></i> 정보 수정
+                    <i class="fas fa-edit"></i> Edit information
                 </a>
                 <a href="{{ url_for('auth.logout') }}" class="logout-btn">
-                    <i class="fas fa-sign-out-alt"></i> 로그아웃
+                    <i class="fas fa-sign-out-alt"></i> logout
                 </a>
             </div>
         </div>        
         <div class="current-values">
             <div class="value-card">
-                <h3>현재 온도</h3>
+                <h3>Current temperature</h3>
                 <div class="value" id="currentTemp">--°C</div>
             </div>
             <div class="value-card">
-                <h3>현재 습도</h3>
+                <h3>Current humid</h3>
                 <div class="value" id="currentHumid">--%</div>
             </div>
             <div class="value-card">
-                <h3>현재 소음</h3>
+                <h3>Current noise</h3>
                 <div class="value" id="currentNoise">--dB</div>
             </div>
         </div>        
         <div class="chart-grid">
             <div class="chart-card">
-                <h3>온도 변화</h3>
+                <h3>Temperature change</h3>
                 <div class="chart-container">
                     <canvas id="temperatureChart"></canvas>
                 </div>
@@ -295,7 +295,7 @@
         </div>
         <div class="chart-grid">
             <div class="chart-card">
-                <h3>습도 변화</h3>
+                <h3>Humid change</h3>
                 <div class="chart-container">
                     <canvas id="humidityChart"></canvas>
                 </div>
@@ -303,40 +303,40 @@
         </div>
         <div class="chart-grid">
             <div class="chart-card">
-                <h3>소음 변화</h3>
+                <h3>Noise change</h3>
                 <div class="chart-container">
                     <canvas id="noiseChart"></canvas>
                 </div>
             </div>
         </div>
         <div class="control-panel">
-            <h2>조명 제어</h2>
+            <h2>Control light</h2>
             <div class="sliders-container">
                 <div class="slider-group">
                     <div class="slider-container">
                         <div class="slider-header">
-                            <span class="slider-label">색상 (Hue)</span>
+                            <span class="slider-label">Hue</span>
                             <span class="slider-value" id="hueValue">{{ light_settings.hue }}°</span>
                         </div>
                         <input type="range" id="hueSlider" class="slider" min="0" max="360" value="180">
                     </div>
                     <div class="slider-container">
                         <div class="slider-header">
-                            <span class="slider-label">채도 (Saturation)</span>
+                            <span class="slider-label">Saturation</span>
                             <span class="slider-value" id="saturationValue">{{ light_settings.saturation }}%</span>
                         </div>
                         <input type="range" id="saturationSlider" class="slider" min="0" max="100" value="50">
                     </div>
                     <div class="slider-container">
                         <div class="slider-header">
-                            <span class="slider-label">밝기 (Lightness)</span>
+                            <span class="slider-label">Lightness</span>
                             <span class="slider-value" id="lightnessValue">{{ light_settings.lightness }}%</span>
                         </div>
                         <input type="range" id="lightnessSlider" class="slider" min="0" max="100" value="50">
                     </div>
                     <div class="slider-container">
                         <div class="slider-header">
-                            <span class="slider-label">조도 (Lux)</span>
+                            <span class="slider-label">Lux</span>
                             <span class="slider-value" id="luxValue">{{ light_settings.lux }}</span>
                         </div>
                         <input type="range" id="luxSlider" class="slider" min="0" max="1000" value="500">

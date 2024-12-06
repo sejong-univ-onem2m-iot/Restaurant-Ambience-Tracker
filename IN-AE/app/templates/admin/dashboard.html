@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}관리자 대시보드{% endblock %}
+{% block title %}Manager Dashboard{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
@@ -11,17 +11,17 @@
 <div class="admin-container">
     <nav class="admin-sidebar">
         <div class="admin-logo">
-            <h2>관리자 페이지</h2>
+            <h2>Manager Page</h2>
         </div>
         <ul class="admin-menu">
-            <li class="active"><a href="{{ url_for('admin.dashboard') }}">대시보드</a></li>
-            <li><a href="{{ url_for('auth.logout') }}">로그아웃</a></li>
+            <li class="active"><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('auth.logout') }}">logout</a></li>
         </ul>
     </nav>
 
     <main class="admin-main">
         <header class="admin-header">
-            <h1>레스토랑 관리</h1>
+            <h1>Manage restaurant</h1>
         </header>
 
         <div class="restaurant-grid">
@@ -49,10 +49,10 @@
                 </div>
                 <div class="restaurant-actions">
                     <a href="{{ url_for('admin.edit_restaurant', id=restaurant.id) }}" class="btn edit-btn">
-                        정보 수정
+                        Edit information
                     </a>
                     <a href="{{ url_for('admin.restaurant_stats', id=restaurant.id) }}" class="btn stats-btn">
-                        상세 통계
+                        Detail
                     </a>
                 </div>
             </div>

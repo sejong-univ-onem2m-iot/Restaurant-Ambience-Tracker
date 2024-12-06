@@ -15,7 +15,7 @@ function createChart(elementId, label, data, color) {
     };
 
     // 각 센서 타입에 따라 적절한 범위를 설정합니다
-    if (label.includes('온도')) {
+    if (label.includes('Temp')) {
         yAxisConfig = {
             ...yAxisConfig,
             min: 0,   // 최저 온도 -10°C
@@ -24,7 +24,7 @@ function createChart(elementId, label, data, color) {
                 callback: value => `${value}°C`  // 온도 단위 표시
             }
         };
-    } else if (label.includes('습도')) {
+    } else if (label.includes('Humid')) {
         yAxisConfig = {
             ...yAxisConfig,
             min: 0,     // 최저 습도 0%
@@ -33,7 +33,7 @@ function createChart(elementId, label, data, color) {
                 callback: value => `${value}%`   // 습도 단위 표시
             }
         };
-    } else if (label.includes('소음')) {
+    } else if (label.includes('Noise')) {
         yAxisConfig = {
             ...yAxisConfig,
             min: 0,     // 최저 소음 0dB
@@ -118,7 +118,7 @@ async function updateCharts() {
         // 온도 차트 업데이트 또는 생성
         if (!charts.temperature) {
             // 차트가 없으면 새로 생성
-            charts.temperature = createChart('temperatureChart', '온도 (°C)', 
+            charts.temperature = createChart('temperatureChart', 'Temperature (°C)', 
                 {timestamps: formattedData.timestamps, values: formattedData.temperature},
                 'rgb(255, 99, 132)');
         } else {
@@ -130,7 +130,7 @@ async function updateCharts() {
 
         // 습도 차트 업데이트 또는 생성
         if (!charts.humidity) {
-            charts.humidity = createChart('humidityChart', '습도 (%)', 
+            charts.humidity = createChart('humidityChart', 'Humid (%)', 
                 {timestamps: formattedData.timestamps, values: formattedData.humidity},
                 'rgb(54, 162, 235)');
         } else {
@@ -141,7 +141,7 @@ async function updateCharts() {
 
         // 소음 차트 업데이트 또는 생성
         if (!charts.noise) {
-            charts.noise = createChart('noiseChart', '소음 (dB)', 
+            charts.noise = createChart('noiseChart', 'Noise (dB)', 
                 {timestamps: formattedData.timestamps, values: formattedData.noise},
                 'rgb(75, 192, 192)');
         } else {
@@ -212,7 +212,7 @@ function initializeControls() {
                     lightness: parseInt(lightness),
                     lux: parseInt(lux)
                 })
-            }).catch(error => console.error('설정 업데이트 실패:', error));
+            }).catch(error => console.error('Update fail:', error));
         }, 300);  // 300ms 디바운스 타임아웃
     }
 
